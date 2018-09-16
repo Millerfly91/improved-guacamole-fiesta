@@ -2,7 +2,8 @@ import socket
 import sys
 import time
 
-class BasicTCPSocket():
+
+class BasicTCPSocket:
     HOST, PORT = "", 9999
     sock = ""
 
@@ -11,9 +12,14 @@ class BasicTCPSocket():
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def connect(self, host, port):
-        self.HOST, sefl.PORT = host, port
+        self.HOST, self.PORT = host, port
         print("Attempting to connect to {}:{}".format(self.HOST, self.PORT))
         self.sock.connect((self.HOST, self.PORT))
+
+    def bind(self, port):
+        self.HOST, self.PORT = "192.168.1.20", port
+        print("Attempting to bind to {}:{}".format(self.HOST, self.PORT))
+        self.sock.bind((self.HOST, self.PORT))
 
     def disconnect(self):
         self.sock.close()
@@ -25,11 +31,22 @@ class BasicTCPSocket():
         print("Received: {}".format(received))
 
     def listen(self):
-        self.connect()
         self.sock.listen(1)
-        time.sleep(10)
-        self.disconnect()
-        return str(self.sock.recv(1024), "utf-8")
+        print("Listening on port []".format(self.PORT))
+        while True:
+            print(sys.stderr, 'waiting for a connection')
+            connection, client_address = self.sock.accept()
+            try:
+                print(sys.stderr, 'client connected:', client_address)
+                while True:
+                    data = connection.recv(16)
+                    print(sys.stderr, 'received ', data)
+                    if data:
+                        connection.sendall(data)
+                    else:
+                        break
+            finally:
+                connection.close()
 
 
 if __name__ == "__main__":
@@ -42,4 +59,3 @@ if __name__ == "__main__":
     # testsock.sendMessage("pen islandS")
     # testsock.sendMessage("Test 2")
     # testsock.sendMessage("TEST 3 TEST 2 TEST # TEST 3 TEST 3 TEST 3 TEST3")
-
