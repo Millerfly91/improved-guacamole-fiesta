@@ -1,0 +1,1 @@
+class base_character:
