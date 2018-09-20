@@ -1,4 +1,5 @@
 import random
+import re
 from BoardGame import Board
 
 
@@ -12,18 +13,42 @@ class GamePlay:
     characters = {}
     targetlocation = ()
 
-    # def movement(self):
-    #     steps = dice_roll(1, 6)
-    #     direction = input("How would you like to move? (ex. Rolled a 5. Up 2, Left 3.")
-    #     go = direction.split(',')
-    #     while moved < steps:
-    #         if direction == 'up'
-    #     print(steps)
+    def movement(self, charname):
+        diceroll = dice_roll(1, 6)
+        mymove = input("You rolled a {}. How would you like to move? (ex. Rolled a 5. Up 2, Left 3.) ".format(diceroll))
+        rawgo = mymove.split(',')
+        for directional in rawgo:
+            direction = directional.split(' ')
+            print('direction is: ', direction)
+            print('directional is: ', directional)
+            self.moveCharDirection(directional, charname)
+        #     pass direction to moveCharDirection
+
+    def moveCharDirection(self, directional, charname):
+        chartoken = self.characters.get(charname)[0]
+        charlocation = self.characters.get(charname)[1]
+        column = int(charlocation[0])
+        row = int(charlocation[1])
+
+        chardirection = directional.strip().split(' ')
+        charsteps = int(chardirection[1])
+
+        if 'left' in chardirection[0]:
+            self.board.set_value(chartoken, row, column - charsteps)
+        elif 'right' in chardirection[0]:
+            self.board.set_value(chartoken, row, column + charsteps)
+        elif 'up' in chardirection[0]:
+            self.board.set_value(chartoken, row - charsteps, column)
+        elif 'down' in chardirection[0]:
+            self.board.set_value(chartoken, row + charsteps, column)
+
+        self.board.set_value('O', row, column)
+        self.board.print_board()
+
 
     def start_game(self):
-
         targetsymbol = '@'
-        targetx = random.randint(1, 10)
+        targetx = random.randint(1, 9)
         targety = random.randint(1, 9)
         self.targetlocation = (targetx, targety)
         # targetinfor = {targetsymbol, self.targetlocation}
@@ -37,22 +62,19 @@ class GamePlay:
             symbol = input('What character would {} like to be? '.format(thisplayer))
             xval = random.randint(1, 10)
             yval = random.randint(1, 9)
-            self.board.set_value(symbol, xval, yval)
+            self.board.set_value(symbol, yval, xval)
             locations = (xval, yval)
             self.characters.__setitem__(thisplayer, [symbol, locations])
         # set the target in a random location on the board
-        self.board.set_value(targetsymbol, targetx, targety)
+        self.board.set_value(targetsymbol, targety, targetx)
         self.board.print_board()
 
-        print(self.characters)
+        print('characters are: ', self.characters)
 
     def play_game(self):
-        print(self.targetlocation)
-       # for key in self.characters.keys():
-
-            # if self.characters.__getitem__(key)[1] == :
-            #     print('You WIN!!!')
-
+        print('target location is: ', self.targetlocation)
+        # for key in self.characters.keys():
+        self.movement(input('Enter name: '))
 
 
 if __name__ == "__main__":
