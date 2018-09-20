@@ -3,6 +3,9 @@ import re
 from BoardGame import Board
 
 
+def boardsize():
+
+
 def dice_roll(num1, num2):
     return random.randint(1, 6)
 
