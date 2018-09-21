@@ -3,21 +3,33 @@ import re
 from BoardGame import Board
 
 
-def boardsize():
-
-
-def dice_roll(num1, num2):
+def dice_roll():
     return random.randint(1, 6)
 
 
 class GamePlay:
 
-    board = Board.Board()
+    board = None
     characters = {}
     targetlocation = ()
 
+    def boardsize(self):
+        boardbounds = input('What size board would you like to play?'
+                            "'enter' for default board."
+                            ' (i.e. 4x5 , 10x10, 25x50) ')
+        if boardbounds == "":
+            length = 10
+            width = 10
+        else:
+            bounds = boardbounds.split('x')
+            length = int(bounds[0])
+            width = int(bounds[1])
+
+        self.board = Board.Board(length, width)
+        self.board.print_board()
+
     def movement(self, charname):
-        diceroll = dice_roll(1, 6)
+        diceroll = dice_roll()
         mymove = input("You rolled a {}. How would you like to move? (ex. Rolled a 5. Up 2, Left 3.) ".format(diceroll))
         self.validateMovement(mymove, diceroll)
         rawgo = mymove.split(',')
@@ -48,7 +60,7 @@ class GamePlay:
 
         chardirection = directional.strip(' ').split(' ')
         charsteps = int(chardirection[1])
-        self.board.set_value('O', row, column)
+        self.board.set_value('0', row, column)
 
         if 'left' in chardirection[0]:
             column = column - charsteps
@@ -62,12 +74,11 @@ class GamePlay:
         self.board.set_value(chartoken, row, column)
         self.characters.get(charname)[1] = (column, row)
 
-
     def start_game(self):
         targetsymbol = '@'
         targetx = random.randint(1, 9)
         targety = random.randint(1, 9)
-        self.targetlocation = (targetx, targety)
+        self.targetlocation = (targety, targetx)
         # targetinfor = {targetsymbol, self.targetlocation}
         # create a dict to hold players
         playernames = input('Enter the names of the people playing, separated by a comma. ')
@@ -80,7 +91,7 @@ class GamePlay:
             xval = random.randint(1, 10)
             yval = random.randint(1, 9)
             self.board.set_value(symbol, yval, xval)
-            locations = (xval, yval)
+            locations = (yval, xval)
             self.characters.__setitem__(thisplayer, [symbol, locations])
         # set the target in a random location on the board
         self.board.set_value(targetsymbol, targety, targetx)
@@ -89,12 +100,20 @@ class GamePlay:
         print('characters are: ', self.characters)
 
     def play_game(self):
-        print('target location is: ', self.targetlocation)
+        # print('target location is: ', self.targetlocation)
         # for key in self.characters.keys():
         self.movement(input('Enter name: '))
-
+        # viewcharstats = self.characters.values()
+        # charstats = list(viewcharstats)
+        # charlocation = charstats[0]
+        # while self.characters[]
+        # print()
+        # print('target location: ', self.targetlocation)
+        # print('character stats: ', charstats)
+        # print('character location: ', charlocation)
 
 if __name__ == "__main__":
     test = GamePlay()
+    test.boardsize()
     test.start_game()
     test.play_game()
