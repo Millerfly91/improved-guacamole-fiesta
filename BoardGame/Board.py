@@ -1,17 +1,5 @@
 class Board:
-    board = [
-        ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"],
-        ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"],
-        ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"],
-        ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"],
-        ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"],
-        ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"],
-        ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"],
-        ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"],
-        ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"],
-        ["O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O"]
-    ]
-
+    board = None
     rows_total = -1
     columns_total = -1
 
@@ -48,6 +36,7 @@ class Board:
 
     def get_total_columns(self):
         return self.columns_total
+
 
 if __name__ == "__main__":
     myBoard = Board(100, 100)
