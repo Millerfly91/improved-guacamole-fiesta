@@ -10,8 +10,7 @@ class baseCharacter:
     player = None
 
     def __str__(self):
-        printout = "Player{}'s name is {}, character token is {} and character " \
-                   'location is {}.'.format(self.player, self.charname, self.token, self.charlocation)
+        printout = self.player, self.charname, self.token, self.charlocation
         return printout
 
     def __repr__(self):

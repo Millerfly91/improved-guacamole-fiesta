@@ -7,6 +7,10 @@ from BoardGame.Base_character import baseCharacter
 class GamePlay2:
 
     board = None
+    chardict = {}
+    targetlocation = ()
+    characterlocations = []
+    charactertokens = []
 
     def setupBoard(self):
         boardbounds = input('What size board would you like to play?'
@@ -32,10 +36,10 @@ class GamePlay2:
         player.health = 10
         player.defence = 10
         player.speed = 3
+        self.charactertokens.append(player.token)
         return player
 
     def setupCharacters(self):
-        chardict = {}
         player = 1
         players = input('\nEnter the names of the people playing, '
                         'separated by a comma. ')
@@ -44,24 +48,25 @@ class GamePlay2:
         for thisplayer in playernames:
             newchar = self.initializeCharacter(thisplayer)
             newchar.player = player
-            chardict.__setitem__('Player'+str(player), newchar)
+            self.chardict.__setitem__('Player'+str(player), newchar)
             player += 1
-            self.placeCharacter(newchar)
+            self.placecharacter(newchar)
+            # print('chardict = ', list(self.chardict))
 
-        self.printCharacters(chardict)
+        sel .printcharacterstats(self.chardict)
 
-    def printCharacters(self, chardict):
-        charlist = list(chardict.keys())
+    def printcharactesStats(self, chardict):
+        charlist = chardict.values()
 
         for name in charlist:
             print(chardict.get(name))
 
-    def placeCharacter(self, player):
+    def placecharacter(self, player):
         row = player.charlocation[0]
         column = player.charlocation[1]
         token = player.token
-        print(row, column)
         self.board.set_value(token, row, column)
+        self.characterlocations.append(player.charlocation)
 
     def randomBoardPosition(self):
         row = random.randint(0, self.board.get_total_rows() - 1)
@@ -72,6 +77,7 @@ class GamePlay2:
         targettoken = '$'
         position = self.randomBoardPosition()
         self.board.set_value(targettoken, position[0], position[1])
+        self.targetlocation = position
 
     def setupGame(self):
         self.setupBoard()
@@ -79,28 +85,43 @@ class GamePlay2:
         self.placeTarget()
         self.board.print_board()
 
-    def characterMovement(self):
+    def characterMovement(self, charname):
         roll = random.randint(1, 6)
-        directional = input("You have rolled a {}."
-                            "\n How would you like to use your turn?"
-                            "\n (ex. Up 2, Left 1)".format(roll))
+        directional = input("{} has rolled a {}."
+                            "\n How would you like to use your turn?" 
+                            "\n (ex. Up 2, Left 1) ".format(charname, roll))
         self.validateMove(roll, directional)
         moves = directional.split(', ')
-        # totalmoves = sum(moves)
+        for movement in moves:
+            direction = movement.split(' ')
+            print('direction is: ', direction)
+            print('movement is: ', movement)
+        self.tokenMovement(moves, charname)
+        # print('94 moves = ', moves)
+        # print('95 charname = ', charname)
 
-        print(moves)
+    def tokenMovement(self, moves, charname):
+        # charstats = list(self.chardict)
+        # chartoken = charstats[2]
+        print('char tokens = ', self.charactertokens)
+        # print(chartoken)
 
     def validateMove(self, roll, movement):
         steps = re.findall(r'\d+', movement)
         stepcount = 0
-        for num in stepslist:
+        for num in steps:
             stepcount += int(num)
+        print('steps are: ', steps)
+        print('stepcount is: ', stepcount)
         if stepcount != roll:
             raise ValueError('Movement is not equal to dice roll. Re evaluate your move.'
                              'Your roll was {}.'.format(roll))
 
     def playGame(self):
-        self.characterMovement()
+        while not self.characterlocations.__contains__(self.targetlocation):
+            for player in self.chardict:
+                self.characterMovement(player)
+
 
 test = GamePlay2()
 test.setupGame()

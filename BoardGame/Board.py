@@ -32,7 +32,7 @@ class Board:
         self.board[row][column] = token
 
     def get_total_rows(self):
-        return self.rowsTotal
+        return self.rows_total
 
     def get_total_columns(self):
         return self.columns_total
