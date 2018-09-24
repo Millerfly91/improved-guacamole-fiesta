@@ -1,6 +1,7 @@
 import random
 import re
-from BoardGame import Board
+from BoardGame.Board import Board
+from BoardGame.Base_character import baseCharacter
 
 
 def dice_roll():
@@ -11,12 +12,13 @@ class GamePlay:
 
     board = None
     characters = {}
+    characters2 = {}
     targetlocation = ()
 
     def boardsize(self):
         boardbounds = input('What size board would you like to play?'
-                            "'enter' for default board."
-                            ' (i.e. 4x5 , 10x10, 25x50) ')
+                            "\n 'enter' for default board."
+                            ' \n (i.e. 4x5 , 10x10, 25x50) ')
         if boardbounds == "":
             length = 10
             width = 10
@@ -25,7 +27,7 @@ class GamePlay:
             length = int(bounds[0])
             width = int(bounds[1])
 
-        self.board = Board.Board(length, width)
+        self.board = Board(length, width)
         self.board.print_board()
 
     def movement(self, charname):
@@ -74,6 +76,16 @@ class GamePlay:
         self.board.set_value(chartoken, row, column)
         self.characters.get(charname)[1] = (column, row)
 
+    def printCharacters(self, chardict):
+        charlist = list(chardict.keys())
+        charstats = list(chardict.values())
+
+        for name in charlist:
+            print('\n', chardict.get(name))
+
+        # print('charlist = ', charlist)
+        # print('charstats = ', charstats)
+
     def start_game(self):
         targetsymbol = '@'
         targetx = random.randint(1, 9)
@@ -81,28 +93,36 @@ class GamePlay:
         self.targetlocation = (targety, targetx)
         # targetinfor = {targetsymbol, self.targetlocation}
         # create a dict to hold players
-        playernames = input('Enter the names of the people playing, separated by a comma. ')
+        playernames = input('\nEnter the names of the people playing, separated by a comma. ')
         # create a list of players from input
         players = playernames.split(',')
         # for every name in the list created, ask for a symbol and assign that player name to a key pair in a
         # dictionary with the symbol as the value
         for thisplayer in players:
             symbol = input('What character would {} like to be? '.format(thisplayer))
-            xval = random.randint(1, 10)
-            yval = random.randint(1, 9)
+            xval = random.randint(0, 9)
+            yval = random.randint(0, 9)
             self.board.set_value(symbol, yval, xval)
             locations = (yval, xval)
             self.characters.__setitem__(thisplayer, [symbol, locations])
+            tempChar = baseCharacter()
+            tempChar.token = symbol
+            tempChar.charlocation = locations
+            tempChar.charname = thisplayer
+            # print(tempChar)
+            self.characters2.__setitem__(thisplayer, tempChar)
+            # print(self.characters2)
         # set the target in a random location on the board
         self.board.set_value(targetsymbol, targety, targetx)
         self.board.print_board()
 
-        print('characters are: ', self.characters)
+        # print('characters are: ', self.characters)
 
     def play_game(self):
         # print('target location is: ', self.targetlocation)
         # for key in self.characters.keys():
         self.movement(input('Enter name: '))
+        print(self.characters.__getattribute__(1))
         # viewcharstats = self.characters.values()
         # charstats = list(viewcharstats)
         # charlocation = charstats[0]
@@ -110,10 +130,11 @@ class GamePlay:
         # print()
         # print('target location: ', self.targetlocation)
         # print('character stats: ', charstats)
-        # print('character location: ', charlocation)
+    # print('character location: ', charlocation)
 
 if __name__ == "__main__":
     test = GamePlay()
     test.boardsize()
     test.start_game()
-    test.play_game()
+    test.printCharacters(test.characters2)
+    # test.play_game()
