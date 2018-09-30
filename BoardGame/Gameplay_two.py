@@ -9,7 +9,6 @@ class GamePlay2:
     board = None
     chardict = {}
     targetlocation = ()
-    characterlocations = []
     charactertokens = []
 
     def setupboard(self):
@@ -66,7 +65,7 @@ class GamePlay2:
         column = player.charlocation[1]
         token = player.token
         self.board.set_value(token, row, column)
-        self.characterlocations.append(player.charlocation)
+        # self.characterlocations.append(player.charlocation)
 
     def randomboardposition(self):
         row = random.randint(0, self.board.get_total_rows() - 1)
@@ -85,42 +84,74 @@ class GamePlay2:
         self.placetarget()
         self.board.print_board()
 
-    def charactermovement(self, charname):
+    def charactermovement(self, player):
+        charname = self.chardict.get(player).charname
+        charlocation = self.chardict.get(player).charlocation
         roll = random.randint(1, 6)
-        directional = input("\n{} has rolled a {}."
+        directional = input("\n{} is at {} and has rolled a {}."
                             "\nHow would you like to use your turn?" 
-                            "\n (ex. Up 2, Left 1) ".format(charname, roll))
+                            "\n (ex. Up 2, Left 1) ".format(charname, charlocation, roll))
         self.validatemove(roll, directional)
-        moves = directional.split(', ')
-        for movement in moves:
-            direction = movement.split(' ')
-            # print('direction is: ', direction)
-            # print('movement is: ', movement)
-        self.tokenmovement(moves, charname)
-        # print('94 moves = ', moves)
-        # print('95 charname = ', charname)
+        movesets = directional.split(', ')
+        print('movesets = ', movesets)
+        for singlemove in movesets:
+            self.removeoldtoken(player)
+            self.tokenmovement(singlemove, player)
 
-    def tokenmovement(self, moves, charname):
-        # charstats = list(self.chardict)
-        # chartoken = charstats[2]
-        print('char tokens = ', self.charactertokens)
-        # print(chartoken)
+    def removeoldtoken(self, player):
+        # resets the characters previous token location
+        currenttoken = self.chardict.get(player).charlocation
+        row = int(currenttoken[0])
+        column = int(currenttoken[1])
+        self.board.set_value('0', row, column)
+
+    def tokenmovement(self, moves, player):
+        location = self.chardict.get(player).charlocation
+        charlocation = list(location)
+        token = self.chardict.get(player).token
+        row = int(charlocation[0])
+        column = int(charlocation[1])
+        move = moves.split(' ')
+        steps = int(move[1])
+        print(row, column)
+
+        if 'left' in move[0]:
+            column = column - steps
+        elif 'right' in move[0]:
+            column = column + steps
+        elif 'up' in move[0]:
+            row = row - steps
+        elif 'down' in move[0]:
+            row = row + steps
+
+        self.board.set_value(token, row, column)
+        # charlocation[0] = row
+        # charlocation[1] = column
+        self.chardict.get(player).charlocation = row, column
+
 
     def validatemove(self, roll, movement):
         steps = re.findall(r'\d+', movement)
         stepcount = 0
         for num in steps:
             stepcount += int(num)
-        # print('steps are: ', steps)
-        # print('stepcount is: ', stepcount)
         if stepcount != roll:
             raise ValueError('Movement is not equal to dice roll. Re evaluate your move.'
                              'Your roll was {}.'.format(roll))
 
     def playgame(self):
-        while not self.characterlocations.__contains__(self.targetlocation):
+        charlocations = []
+
+        for player in self.chardict:
+            charlocation = self.chardict.get(player).charlocation
+            charlocations.append(charlocation)
+        print(charlocations)
+
+        while not charlocations.__contains__(self.targetlocation):
             for player in self.chardict:
                 self.charactermovement(player)
+
+            self.board.print_board()
 
 
 test = GamePlay2()

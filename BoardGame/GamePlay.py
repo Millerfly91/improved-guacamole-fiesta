@@ -61,6 +61,7 @@ class GamePlay:
         chardirection = directional.strip(' ').split(' ')
         charsteps = int(chardirection[1])
         self.board.set_value('0', row, column)
+        print(chardirection)
 
         if 'left' in chardirection[0]:
             column = column - charsteps

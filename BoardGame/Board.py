@@ -27,7 +27,7 @@ class Board:
         for row in self.board:
             print(row)
 
-    # Puts tocken at row row and column column.
+    # Puts token at row row and column column.
     def set_value(self, token, row, column):
         self.board[row][column] = token
 
